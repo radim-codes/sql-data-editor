@@ -124,4 +124,4 @@ $data->delete();
 #TODO: Add UI interface
 ## Contributors
 
-- [@RadimKuncicky07](https://github.com/RadimKuncicky07) (Author)
+- [@radim-codes](https://github.com/radim-codes) (Author)
