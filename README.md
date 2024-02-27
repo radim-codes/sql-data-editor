@@ -37,7 +37,7 @@ All these things also don't have to be made using the UI, you can also use custo
 Start using SDE in PHP:
 
 ```php
-  include (https://github.com/RadimKuncicky07/sql-data-editor.php)
+  include (https://raw.githubusercontent.com/RadimKuncicky07/sql-data-editor/main/main.php)
 ```
     
 ## Documentation
