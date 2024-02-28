@@ -93,7 +93,7 @@ $document->delete();
 ### 4. Column
 #### Create column:
 ```php
-$column = $document->createColumn("id","INT",10); // createColumn($col_name, $type, $length)
+$column = $document->createColumn("id","INT",10,"primary","a_i"); // createColumn($col_name, $type, $length, ...$data)
 ```
 #### Find column:
 ```php
@@ -101,7 +101,7 @@ $column = $document->findColumn("id"); // findColumn($unique_column)
 ```
 #### Edit column:
 ```php
-$column->edit("uuid","VARCHAR",16); // edit($col_name, $type, $length)
+$column->edit("uuid","VARCHAR",16,"no a_i"); // edit($col_name, $type, $length, ...$data)
 ```
 #### Delete column:
 ```php
