@@ -45,8 +45,12 @@ Start using SDE in PHP:
 ### 1. Connection
 #### Create connection:
 ```php
-$conn = mysqli_connect("127.0.0.1", "root", "");
+$conn = new mysqli("127.0.0.1", "root", "");
 $connection = new Connection($conn);
+```
+or
+```php
+$connection = new Connection("127.0.0.1", "root", "");
 ```
 #### Close connection:
 ```php
