@@ -8,9 +8,28 @@ class Connection{
     function close(){
         $this->conn->close();
     }
+    function createDatabase($name, $collation){
+        $sql = "CREATE DATABASE $name COLLATE $collation";
+        if ($this->conn->query($sql) === TRUE) {
+            $this->conn->select_db($name);
+            return new Database($name,$collation);
+        } else {
+            return false;
+        }
+    }
+}
+class Database{
+    private $name;
+    private $collation;
+    private $conn;
+    function __construct($name, $collation){
+        $this->name = $name;
+        $this->collation = $collation;
+      
+    }
 }
 $connection = new Connection($conn);
-//Insert your code here
+$database = $connection->createDatabase("dbname", "utf8_general_ci");
 $connection->close();
 #TODO: 
 // Connection
