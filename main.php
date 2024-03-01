@@ -12,9 +12,19 @@ class Connection{
         $sql = "CREATE DATABASE $name COLLATE $collation";
         if ($this->conn->query($sql) === TRUE) {
             $this->conn->select_db($name);
-            return new Database($this->$conn,$name,$collation);
+            return new Database($this->conn,$name,$collation);
         } else {
+            echo "Error creating database";
             return false;
+        }
+    }
+    function connectDatabase($name){
+        $this->conn->select_db($name);
+        if ($this->conn->connect_error) {
+            echo "Error connecting to database";
+            return false;
+        } else {
+            return new Database($this->conn,$name);
         }
     }
 }
@@ -22,21 +32,39 @@ class Database{
     private $name;
     private $collation;
     private $conn;
-    function __construct($conn,$name, $collation){
+    function __construct($conn,$name, $collation = ""){
         $this->name = $name;
         $this->collation = $collation;
         $this->conn = $conn;
     }
     function createDocument($name,$num_of_rows){   
-         $sql = "CREATE TABLE $name($num_of_rows)";           
+        $rows = "";
+        for ($i = 1; $i <= $num_of_rows; $i++) {
+            $rows .= "column$i VARCHAR(255), ";
+        }
+        $rows = rtrim($rows, ', ');
+         $sql = "CREATE TABLE $name($rows)";           
          if ($this->conn->query($sql) === TRUE) {
-            return new Document($this->$conn,$name,$num_of_rows);
+            return new Document($this->conn,$name,$num_of_rows);
         } else {
+            echo "Error creating document";
             return false;
-        }     }
+        }     
+    }
+}
+class Document{
+    private $name;
+    private $num_of_rows;
+    private $conn;
+    function __construct($conn,$name, $num_of_rows){
+        $this->name = $name;
+        $this->num_of_rows = $num_of_rows;
+        $this->conn = $conn;
+    }
 }
 $connection = new Connection($conn);
-$database = $connection->createDatabase("dbname", "utf8_general_ci");
+$database = $connection->connectDatabase("testingDatabase");
+$document = $database->createDocument("testingTable", 10);
 $connection->close();
 #TODO: 
 // Connection
