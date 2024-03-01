@@ -12,7 +12,7 @@ class Connection{
         $sql = "CREATE DATABASE $name COLLATE $collation";
         if ($this->conn->query($sql) === TRUE) {
             $this->conn->select_db($name);
-            return new Database($name,$collation);
+            return new Database($this->$conn,$name,$collation);
         } else {
             return false;
         }
@@ -22,11 +22,18 @@ class Database{
     private $name;
     private $collation;
     private $conn;
-    function __construct($name, $collation){
+    function __construct($conn,$name, $collation){
         $this->name = $name;
         $this->collation = $collation;
-      
+        $this->conn = $conn;
     }
+    function createDocument($name,$num_of_rows){   
+         $sql = "CREATE TABLE $name($num_of_rows)";           
+         if ($this->conn->query($sql) === TRUE) {
+            return new Document($this->$conn,$name,$num_of_rows);
+        } else {
+            return false;
+        }     }
 }
 $connection = new Connection($conn);
 $database = $connection->createDatabase("dbname", "utf8_general_ci");
