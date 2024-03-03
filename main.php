@@ -37,15 +37,10 @@ class Database{
         $this->collation = $collation;
         $this->conn = $conn;
     }
-    function createDocument($name,$num_of_rows){   
-        $rows = "";
-        for ($i = 1; $i <= $num_of_rows; $i++) {
-            $rows .= "column$i VARCHAR(255), ";
-        }
-        $rows = rtrim($rows, ', ');
-         $sql = "CREATE TABLE $name($rows)";           
+    function createDocument($name){   
+         $sql = "CREATE TABLE $name(SDE_PLACEHOLDER INT)";           
          if ($this->conn->query($sql) === TRUE) {
-            return new Document($this->conn,$name,$num_of_rows);
+            return new Document($this->conn,$name);
         } else {
             echo "Error creating document";
             return false;
@@ -54,36 +49,54 @@ class Database{
 }
 class Document{
     private $name;
-    private $num_of_rows;
     private $conn;
-    function __construct($conn,$name, $num_of_rows){
+    private $columns;
+    function __construct($conn,$name){
         $this->name = $name;
-        $this->num_of_rows = $num_of_rows;
         $this->conn = $conn;
+        $this->columns = 0;
+    }
+    function createColumn($row_name, $type, $length){
+        if($this->columns == 0){
+            $sql = "ALTER TABLE $this->name CHANGE COLUMN SDE_PLACEHOLDER $row_name $type($length)";
+        }else{
+            $sql = "ALTER TABLE $this->name ADD $row_name $type($length)";
+        }
+        if ($this->conn->query($sql) === FALSE) {
+            echo "Error creating row";
+            return false;
+        } 
+        $this->columns += 1;
+        return true;
     }
 }
 $connection = new Connection($conn);
-$database = $connection->connectDatabase("testingDatabase");
-$document = $database->createDocument("testingTable", 10);
+
+$database = $connection->createDatabase("Database", "utf8_general_ci");
+
+$document = $database->createDocument("Document");
+
+$document->createColumn("id", "INT", 10);
+$document->createColumn("username", "VARCHAR", 20);
+$document->createColumn("email", "VARCHAR", 255);
+$document->createColumn("password", "VARCHAR", 255);
+
 $connection->close();
 #TODO: 
 // Connection
 // new Connection($...data) - Connection between server and client using parameters: ip, user, password
 
 // Database
-// createDatabase($db_name, $collation) - Create database
 // connectDatabase($db_name) - Connect database (mysqli_select_db("dbname", $conn))
 // edit($db_name, $collation) - Edit database
 // delete() - Delete database
 
 // Document
-// createDocument($doc_name, $num_of_rows) - Create document
 // connectDocument($doc_name) - Connect document
 // edit($doc_name, $num_of_rows) - Edit document
 // delete() - Delete document
 
 // Column
-// createColumn($col_name, $type, $length, ...$data) - Create column
 // findColumn($unique_column) - Find column
 // edit($col_name, $type, $length, ...$data) - Edit column
 // delete() - Delete column
